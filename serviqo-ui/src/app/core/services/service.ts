@@ -17,7 +17,7 @@ export class ServiceService {
 
   private http = inject(HttpClient);
 
-  private apiUrl = '/api/Services';
+  private apiUrl = 'https://serviqo-rqee.onrender.com/api/Services';
 
 
   getServices(): Observable<Service[]> {
