@@ -35,7 +35,7 @@ export class ProfessionalService {
 
   private http = inject(HttpClient);
 
-  private apiUrl = '/api/Professionals';
+  private apiUrl = 'https://serviqo-rqee.onrender.com/api/Professionals';
 
   // GET ALL PROFESSIONALS
   getProfessionals(): Observable<Professional[]> {
