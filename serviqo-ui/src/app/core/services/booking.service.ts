@@ -28,7 +28,7 @@ export class BookingService {
 
   private http = inject(HttpClient);
 
-  private apiUrl = '/api/Bookings';
+  private apiUrl = 'https://serviqo-rqee.onrender.com/api/Bookings';
 
 
   getMyBookings(): Observable<Booking[]> {
