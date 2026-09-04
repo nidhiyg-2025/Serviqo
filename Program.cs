@@ -27,10 +27,10 @@ builder.Services.AddCors(options =>
 
 
 // Database
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")
-    ));
+    options.UseNpgsql(connectionString));
 
 // Controllers
 builder.Services.AddControllers();

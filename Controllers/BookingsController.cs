@@ -28,14 +28,52 @@ public class BookingsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateBooking(CreateBookingDto dto)
     {
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        // =====================================================
+        // IMPORTANT:
+        // datetime-local from Angular does NOT contain timezone.
+        // We treat the selected date/time as local time.
+        // =====================================================
+
+        Console.WriteLine(
+            $"BOOKING DATE RECEIVED: {dto.BookingDate:yyyy-MM-dd HH:mm:ss}"
+        );
+
+        var userIdClaim =
+            User.FindFirst(ClaimTypes.NameIdentifier);
 
         if (userIdClaim == null)
         {
-            return Unauthorized();
+            return Unauthorized(new
+            {
+                message = "User authentication information not found."
+            });
         }
 
-        var customerId = int.Parse(userIdClaim.Value);
+        if (!int.TryParse(userIdClaim.Value, out int customerId))
+        {
+            return Unauthorized(new
+            {
+                message = "Invalid customer information."
+            });
+        }
+
+        // -----------------------------------------------------
+        // Make sure BookingDate is treated as local/unspecified
+        // rather than UTC.
+        // -----------------------------------------------------
+
+        var bookingDate = DateTime.SpecifyKind(
+            dto.BookingDate,
+            DateTimeKind.Unspecified
+        );
+
+        Console.WriteLine(
+            $"BOOKING DATE AFTER NORMALIZATION: {bookingDate:yyyy-MM-dd HH:mm:ss}"
+        );
+
+        // =====================================================
+        // Check service
+        // =====================================================
 
         var service = await _context.Services
             .FirstOrDefaultAsync(s =>
@@ -50,13 +88,21 @@ public class BookingsController : ControllerBase
             });
         }
 
-        if (dto.BookingDate <= DateTime.Now)
+        // =====================================================
+        // Check booking date
+        // =====================================================
+
+        if (bookingDate <= DateTime.Now)
         {
             return BadRequest(new
             {
                 message = "Booking date must be in the future."
             });
         }
+
+        // =====================================================
+        // Create booking
+        // =====================================================
 
         var booking = new Booking
         {
@@ -69,7 +115,8 @@ public class BookingsController : ControllerBase
             // Initially no professional is assigned
             ProfessionalId = null,
 
-            BookingDate = dto.BookingDate,
+            // Store the exact date/time selected by customer
+            BookingDate = bookingDate,
 
             Address = dto.Address,
 
@@ -83,6 +130,10 @@ public class BookingsController : ControllerBase
         _context.Bookings.Add(booking);
 
         await _context.SaveChangesAsync();
+
+        Console.WriteLine(
+            $"BOOKING SAVED: {booking.BookingDate:yyyy-MM-dd HH:mm:ss}"
+        );
 
         return Ok(new
         {
@@ -103,18 +154,23 @@ public class BookingsController : ControllerBase
     [HttpGet("my")]
     public async Task<IActionResult> GetMyBookings()
     {
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        var userIdClaim =
+            User.FindFirst(ClaimTypes.NameIdentifier);
 
         if (userIdClaim == null)
         {
             return Unauthorized();
         }
 
-        var customerId = int.Parse(userIdClaim.Value);
+        if (!int.TryParse(userIdClaim.Value, out int customerId))
+        {
+            return Unauthorized();
+        }
 
         var bookings = await _context.Bookings
 
-            .Where(b => b.CustomerId == customerId)
+            .Where(b =>
+                b.CustomerId == customerId)
 
             .Include(b => b.Service)
 
@@ -136,9 +192,10 @@ public class BookingsController : ControllerBase
 
                 b.Status,
 
-                Professional = b.Professional != null
-                    ? b.Professional.FullName
-                    : null,
+                Professional =
+                    b.Professional != null
+                        ? b.Professional.FullName
+                        : null,
 
                 b.CreatedAt
             })
@@ -157,14 +214,18 @@ public class BookingsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetMyBooking(int id)
     {
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        var userIdClaim =
+            User.FindFirst(ClaimTypes.NameIdentifier);
 
         if (userIdClaim == null)
         {
             return Unauthorized();
         }
 
-        var customerId = int.Parse(userIdClaim.Value);
+        if (!int.TryParse(userIdClaim.Value, out int customerId))
+        {
+            return Unauthorized();
+        }
 
         var booking = await _context.Bookings
 
@@ -196,16 +257,17 @@ public class BookingsController : ControllerBase
 
                 b.Status,
 
-                Professional = b.Professional != null
-                    ? new
-                    {
-                        b.Professional.FullName,
+                Professional =
+                    b.Professional != null
+                        ? new
+                        {
+                            b.Professional.FullName,
 
-                        b.Professional.Phone,
+                            b.Professional.Phone,
 
-                        b.Professional.Specialization
-                    }
-                    : null,
+                            b.Professional.Specialization
+                        }
+                        : null,
 
                 b.CreatedAt
             })
@@ -264,9 +326,10 @@ public class BookingsController : ControllerBase
 
                 b.Status,
 
-                Professional = b.Professional != null
-                    ? b.Professional.FullName
-                    : null,
+                Professional =
+                    b.Professional != null
+                        ? b.Professional.FullName
+                        : null,
 
                 b.CreatedAt
             })
@@ -298,10 +361,12 @@ public class BookingsController : ControllerBase
             });
         }
 
-        var professional = await _context.Professionals
+        var professional =
+            await _context.Professionals
 
             .FirstOrDefaultAsync(p =>
-                p.ProfessionalId == dto.ProfessionalId &&
+                p.ProfessionalId ==
+                    dto.ProfessionalId &&
                 p.IsAvailable);
 
         if (professional == null)
@@ -321,7 +386,8 @@ public class BookingsController : ControllerBase
 
         return Ok(new
         {
-            message = "Professional assigned successfully.",
+            message =
+                "Professional assigned successfully.",
 
             professionalId =
                 professional.ProfessionalId,
@@ -400,11 +466,15 @@ public class BookingsController : ControllerBase
             return Unauthorized();
         }
 
-        var userId = int.Parse(userIdClaim.Value);
+        if (!int.TryParse(userIdClaim.Value, out int userId))
+        {
+            return Unauthorized();
+        }
 
-        // Find Professional profile linked to
-        // the logged-in User
-        var professional = await _context.Professionals
+        // Find Professional profile linked
+        // to the logged-in User
+        var professional =
+            await _context.Professionals
 
             .FirstOrDefaultAsync(p =>
                 p.UserId == userId);
@@ -422,7 +492,7 @@ public class BookingsController : ControllerBase
 
             .Where(b =>
                 b.ProfessionalId ==
-                professional.ProfessionalId)
+                    professional.ProfessionalId)
 
             .Include(b => b.Customer)
 
@@ -436,11 +506,14 @@ public class BookingsController : ControllerBase
 
                 b.BookingNumber,
 
-                Customer = b.Customer.FullName,
+                Customer =
+                    b.Customer.FullName,
 
-                CustomerPhone = b.Customer.Phone,
+                CustomerPhone =
+                    b.Customer.Phone,
 
-                Service = b.Service.ServiceName,
+                Service =
+                    b.Service.ServiceName,
 
                 b.BookingDate,
 
@@ -467,9 +540,10 @@ public class BookingsController : ControllerBase
 
     [Authorize(Roles = "Professional")]
     [HttpPut("{id}/professional-status")]
-    public async Task<IActionResult> UpdateProfessionalStatus(
-        int id,
-        UpdateBookingStatusDto dto)
+    public async Task<IActionResult>
+        UpdateProfessionalStatus(
+            int id,
+            UpdateBookingStatusDto dto)
     {
         var userIdClaim =
             User.FindFirst(ClaimTypes.NameIdentifier);
@@ -479,10 +553,16 @@ public class BookingsController : ControllerBase
             return Unauthorized();
         }
 
-        var userId = int.Parse(userIdClaim.Value);
+        if (!int.TryParse(
+                userIdClaim.Value,
+                out int userId))
+        {
+            return Unauthorized();
+        }
 
         // Find logged-in professional
-        var professional = await _context.Professionals
+        var professional =
+            await _context.Professionals
 
             .FirstOrDefaultAsync(p =>
                 p.UserId == userId);
@@ -515,7 +595,8 @@ public class BookingsController : ControllerBase
 
         // Make sure this booking actually belongs
         // to the logged-in professional
-        var booking = await _context.Bookings
+        var booking =
+            await _context.Bookings
 
             .FirstOrDefaultAsync(b =>
                 b.BookingId == id &&
