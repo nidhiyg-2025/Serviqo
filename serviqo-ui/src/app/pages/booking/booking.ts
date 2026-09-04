@@ -27,6 +27,13 @@ export class Booking implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
+  // ==========================================
+  // API
+  // ==========================================
+
+  private apiUrl =
+    'https://serviqo-rqee.onrender.com/api';
+
 
   // ==========================================
   // SELECTED SERVICE
@@ -111,6 +118,21 @@ export class Booking implements OnInit {
 
       next: (service) => {
 
+        console.log(
+          'SELECTED SERVICE:',
+          service
+        );
+
+        if (!service) {
+
+          this.errorMessage =
+            'Selected service could not be found.';
+
+          this.loadingService = false;
+
+          return;
+        }
+
         this.serviceName =
           service.serviceName;
 
@@ -182,7 +204,7 @@ export class Booking implements OnInit {
     // PHONE VALIDATION
     // ------------------------------------------
 
-    if (!/^[0-9]{10}$/.test(this.phone)) {
+    if (!/^[0-9]{10}$/.test(this.phone.trim())) {
 
       this.errorMessage =
         'Please enter a valid 10-digit phone number.';
@@ -212,28 +234,7 @@ export class Booking implements OnInit {
 
 
     // ==========================================
-    // IMPORTANT TIMEZONE FIX
-    // ==========================================
-    //
-    // DO NOT use:
-    //
-    // selectedDate.toISOString()
-    //
-    // because it converts IST to UTC.
-    //
-    // Example:
-    //
-    // 13:30 IST
-    // becomes
-    // 08:00 UTC
-    //
-    // Instead, send the datetime-local value
-    // exactly as selected by the customer.
-    //
-    // Example:
-    //
-    // 2026-08-30T13:30
-    //
+    // BOOKING DATA
     // ==========================================
 
     const bookingData = {
@@ -276,7 +277,7 @@ export class Booking implements OnInit {
 
     this.http
       .post<any>(
-        '/api/Bookings',
+        `${this.apiUrl}/Bookings`,
         bookingData
       )
       .subscribe({
@@ -293,12 +294,32 @@ export class Booking implements OnInit {
 
 
           // --------------------------------------
+          // SAFETY CHECK
+          // --------------------------------------
+
+          if (!response) {
+
+            console.error(
+              'BOOKING RESPONSE IS NULL'
+            );
+
+            this.errorMessage =
+              'Booking was created but the server returned an empty response.';
+
+            this.bookingSubmitted = false;
+
+            return;
+          }
+
+
+          // --------------------------------------
           // GET BOOKING ID
           // --------------------------------------
 
           this.bookingId =
             response.bookingId ??
-            response.BookingId;
+            response.BookingId ??
+            0;
 
 
           // --------------------------------------
@@ -311,14 +332,32 @@ export class Booking implements OnInit {
             '';
 
 
+          console.log(
+            'BOOKING ID:',
+            this.bookingId
+          );
+
+          console.log(
+            'BOOKING NUMBER:',
+            this.bookingNumber
+          );
+
+
           // --------------------------------------
           // CHECK BOOKING ID
           // --------------------------------------
 
           if (!this.bookingId) {
 
+            console.error(
+              'BOOKING ID WAS NOT RETURNED:',
+              response
+            );
+
             this.errorMessage =
               'Booking was created but booking ID was not returned.';
+
+            this.bookingSubmitted = false;
 
             return;
           }
@@ -344,7 +383,7 @@ export class Booking implements OnInit {
 
 
           // --------------------------------------
-          // ALLOW RETRY IF BOOKING WAS NOT CREATED
+          // ALLOW RETRY
           // --------------------------------------
 
           this.bookingSubmitted = false;
@@ -386,15 +425,36 @@ export class Booking implements OnInit {
 
   createPaymentOrder(): void {
 
+    // ------------------------------------------
+    // SAFETY CHECK
+    // ------------------------------------------
+
+    if (!this.bookingId) {
+
+      console.error(
+        'Cannot create payment order. Booking ID is missing.'
+      );
+
+      this.errorMessage =
+        'Booking ID is missing. Payment cannot be started.';
+
+      return;
+    }
+
+
     this.paymentLoading = true;
 
     this.errorMessage = '';
     this.successMessage = '';
 
 
+    // ==========================================
+    // CREATE PAYMENT ORDER
+    // ==========================================
+
     this.http
       .post<any>(
-        `/api/Payments/create-order/${this.bookingId}`,
+        `${this.apiUrl}/Payments/create-order/${this.bookingId}`,
         {}
       )
       .subscribe({
@@ -408,6 +468,23 @@ export class Booking implements OnInit {
 
 
           this.paymentLoading = false;
+
+
+          // --------------------------------------
+          // CHECK PAYMENT RESPONSE
+          // --------------------------------------
+
+          if (!response) {
+
+            console.error(
+              'RAZORPAY ORDER RESPONSE IS NULL'
+            );
+
+            this.errorMessage =
+              'Unable to create payment order.';
+
+            return;
+          }
 
 
           // --------------------------------------
@@ -442,9 +519,7 @@ export class Booking implements OnInit {
               'Unable to start payment. Please try again.';
           }
 
-          // Do NOT reset bookingSubmitted.
-          //
-          // The booking already exists.
+          // Booking already exists.
         }
 
       });
@@ -457,10 +532,36 @@ export class Booking implements OnInit {
 
   openRazorpayCheckout(order: any): void {
 
+    // ------------------------------------------
+    // CHECK RAZORPAY
+    // ------------------------------------------
+
     if (typeof Razorpay === 'undefined') {
 
       this.errorMessage =
         'Razorpay Checkout could not be loaded.';
+
+      return;
+    }
+
+
+    // ------------------------------------------
+    // CHECK ORDER
+    // ------------------------------------------
+
+    if (
+      !order ||
+      !order.orderId ||
+      !order.keyId
+    ) {
+
+      console.error(
+        'INVALID RAZORPAY ORDER:',
+        order
+      );
+
+      this.errorMessage =
+        'Invalid payment order received from server.';
 
       return;
     }
@@ -592,6 +693,23 @@ export class Booking implements OnInit {
     paymentResponse: any
   ): void {
 
+    // ------------------------------------------
+    // SAFETY CHECK
+    // ------------------------------------------
+
+    if (!this.bookingId) {
+
+      console.error(
+        'Cannot verify payment. Booking ID is missing.'
+      );
+
+      this.errorMessage =
+        'Booking ID is missing. Payment verification cannot continue.';
+
+      return;
+    }
+
+
     this.paymentLoading = true;
 
     this.errorMessage = '';
@@ -629,7 +747,7 @@ export class Booking implements OnInit {
 
     this.http
       .post<any>(
-        '/api/Payments/verify',
+        `${this.apiUrl}/Payments/verify`,
         verifyData
       )
       .subscribe({
