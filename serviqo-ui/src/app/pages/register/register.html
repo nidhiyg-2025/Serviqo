@@ -1,0 +1,184 @@
+<section class="register-page">
+
+  <div class="register-wrapper">
+
+    <!-- BRAND -->
+
+    <div class="register-brand">
+
+      <div class="brand-mark">
+        S
+      </div>
+
+      <span>SERVIQO</span>
+
+    </div>
+
+
+    <!-- CARD -->
+
+    <div class="register-card">
+
+      <div class="register-header">
+
+        <span class="eyebrow">
+          JOIN SERVIQO
+        </span>
+
+        <h1>
+          Create your<br>
+          <span>account.</span>
+        </h1>
+
+        <p>
+          Book trusted professionals and manage
+          your home services with ease.
+        </p>
+
+      </div>
+
+
+      <!-- ERROR -->
+
+      @if (errorMessage) {
+
+        <div class="error-message">
+          {{ errorMessage }}
+        </div>
+
+      }
+
+
+      <!-- SUCCESS -->
+
+      @if (successMessage) {
+
+        <div class="success-message">
+          {{ successMessage }}
+        </div>
+
+      }
+
+
+      <!-- FORM -->
+
+      <form
+        (ngSubmit)="register()"
+        #registerForm="ngForm">
+
+
+        <!-- FULL NAME -->
+
+        <div class="form-group">
+
+          <label>
+            Full name
+          </label>
+
+          <input
+            type="text"
+            name="fullName"
+            [(ngModel)]="fullName"
+            placeholder="Enter your full name"
+            required>
+
+        </div>
+
+
+        <!-- EMAIL -->
+
+        <div class="form-group">
+
+          <label>
+            Email address
+          </label>
+
+          <input
+            type="email"
+            name="email"
+            [(ngModel)]="email"
+            placeholder="you@example.com"
+            required>
+
+        </div>
+
+
+        <!-- PHONE -->
+
+        <div class="form-group">
+
+          <label>
+            Phone number
+          </label>
+
+          <input
+            type="tel"
+            name="phone"
+            [(ngModel)]="phone"
+            placeholder="Enter your 10-digit phone number"
+            maxlength="10"
+            required>
+
+        </div>
+
+
+        <!-- PASSWORD -->
+
+        <div class="form-group">
+
+          <label>
+            Password
+          </label>
+
+          <input
+            type="password"
+            name="password"
+            [(ngModel)]="password"
+            placeholder="Create a password"
+            required>
+
+        </div>
+
+
+        <!-- SUBMIT -->
+
+        <button
+          type="submit"
+          class="register-btn"
+          [disabled]="
+            loading ||
+            registerForm.invalid
+          ">
+
+          @if (loading) {
+
+            Creating account...
+
+          } @else {
+
+            Create account →
+
+          }
+
+        </button>
+
+      </form>
+
+
+      <!-- LOGIN LINK -->
+
+      <div class="login-link">
+
+        Already have an account?
+
+        <a routerLink="/login">
+          Sign in
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>

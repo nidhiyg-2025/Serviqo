@@ -1,0 +1,291 @@
+.about-page {
+  background: #f7f7f4;
+  color: #171717;
+  min-height: 100vh;
+}
+
+/* COMMON */
+
+.container {
+  width: min(1180px, 90%);
+  margin: 0 auto;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #e36b32;
+  margin-bottom: 18px;
+}
+
+/* HERO */
+
+.about-hero {
+  padding: 110px 0 90px;
+  background: #171717;
+  color: white;
+}
+
+.about-hero h1 {
+  max-width: 850px;
+  margin: 0;
+  font-size: clamp(48px, 7vw, 82px);
+  line-height: 0.98;
+  letter-spacing: -3px;
+}
+
+.about-hero h1 span {
+  display: block;
+  color: #e36b32;
+}
+
+.about-hero p {
+  max-width: 650px;
+  margin-top: 30px;
+  font-size: 18px;
+  line-height: 1.7;
+  color: #d0d0d0;
+}
+
+/* STORY */
+
+.story-section {
+  padding: 110px 0;
+  background: #f7f7f4;
+}
+
+.story-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 100px;
+}
+
+.story-heading h2 {
+  margin: 0;
+  font-size: 52px;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+.story-heading h2 span {
+  display: block;
+  color: #e36b32;
+}
+
+.story-content p {
+  margin: 0 0 25px;
+  font-size: 17px;
+  line-height: 1.8;
+  color: #555;
+}
+
+/* MISSION */
+
+.mission-section {
+  padding: 100px 0;
+  background: white;
+}
+
+.section-heading {
+  max-width: 700px;
+  margin-bottom: 55px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: 48px;
+  letter-spacing: -2px;
+}
+
+.section-heading h2 span {
+  color: #e36b32;
+}
+
+.section-heading p {
+  margin-top: 18px;
+  font-size: 17px;
+  line-height: 1.7;
+  color: #666;
+}
+
+.mission-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.mission-card {
+  padding: 35px;
+  min-height: 260px;
+  border: 1px solid #e5e5e2;
+  background: #f7f7f4;
+}
+
+.mission-icon {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 35px;
+  background: #171717;
+  color: #e36b32;
+  font-size: 22px;
+}
+
+.mission-card h3 {
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+.mission-card p {
+  color: #666;
+  line-height: 1.6;
+}
+
+/* VALUES */
+
+.values-section {
+  padding: 100px 0;
+  background: #171717;
+  color: white;
+}
+
+.values-content {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 100px;
+}
+
+.values-content h2 {
+  margin: 0;
+  font-size: 52px;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+.values-content h2 span {
+  display: block;
+  color: #e36b32;
+}
+
+.values-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.value {
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  gap: 20px;
+  padding: 28px 0;
+  border-bottom: 1px solid #333;
+}
+
+.value > span {
+  color: #e36b32;
+  font-weight: 700;
+}
+
+.value h3 {
+  margin: 0 0 8px;
+  font-size: 21px;
+}
+
+.value p {
+  margin: 0;
+  color: #aaa;
+  line-height: 1.6;
+}
+
+/* CTA */
+
+.cta-section {
+  padding: 80px 0;
+  background: #e36b32;
+  color: white;
+}
+
+.cta-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.cta-content h2 {
+  margin: 0;
+  font-size: 48px;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+.cta-content h2 span {
+  display: block;
+  color: #171717;
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 25px;
+  background: #171717;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.cta-button:hover {
+  background: white;
+  color: #171717;
+}
+
+/* MOBILE */
+
+@media (max-width: 900px) {
+
+  .story-grid,
+  .values-content {
+    grid-template-columns: 1fr;
+    gap: 50px;
+  }
+
+  .mission-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cta-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+}
+
+@media (max-width: 600px) {
+
+  .about-hero {
+    padding: 80px 0 70px;
+  }
+
+  .about-hero h1 {
+    font-size: 48px;
+  }
+
+  .story-section,
+  .mission-section,
+  .values-section {
+    padding: 70px 0;
+  }
+
+  .story-heading h2,
+  .values-content h2,
+  .section-heading h2,
+  .cta-content h2 {
+    font-size: 40px;
+  }
+
+}

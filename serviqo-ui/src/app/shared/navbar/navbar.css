@@ -1,0 +1,123 @@
+.navbar-custom {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(247, 247, 244, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid #e5e5e1;
+}
+
+.nav-container {
+  max-width: 1240px;
+  margin: auto;
+  padding: 18px 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  text-decoration: none;
+  color: #171717;
+
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.brand-mark {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #e36b32;
+  color: white;
+
+  border-radius: 8px;
+
+  font-weight: 800;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+
+  transition: 0.2s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: #171717;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.login-link {
+  text-decoration: none;
+  color: #171717;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.signup-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 11px 18px;
+
+  background: #171717;
+  color: white;
+
+  border-radius: 7px;
+
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  transition: 0.2s ease;
+}
+
+.signup-btn:hover {
+  background: #e36b32;
+  color: white;
+}
+
+@media (max-width: 800px) {
+
+  .nav-links {
+    display: none;
+  }
+
+  .login-link {
+    display: none;
+  }
+
+  .nav-container {
+    padding: 14px 16px;
+  }
+
+}
+

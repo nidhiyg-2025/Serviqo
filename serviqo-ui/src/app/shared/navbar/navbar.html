@@ -1,0 +1,185 @@
+<nav class="navbar-custom">
+
+  <div class="nav-container">
+
+    <!-- ==================== BRAND ==================== -->
+
+    <a routerLink="/home" class="brand">
+
+      <span class="brand-mark">
+        S
+      </span>
+
+      <span class="brand-name">
+        SERVIQO
+      </span>
+
+    </a>
+
+
+    <!-- ==================== NAVIGATION ==================== -->
+
+    <div class="nav-links">
+
+      <!-- HOME -->
+
+      <a
+        routerLink="/home"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }">
+
+        Home
+
+      </a>
+
+
+      <!-- ==================== CUSTOMER ==================== -->
+
+      @if (loggedIn && role === 'Customer') {
+
+        <a
+          routerLink="/services"
+          routerLinkActive="active">
+
+          Services
+
+        </a>
+
+
+        <a
+          routerLink="/my-bookings"
+          routerLinkActive="active">
+
+          My Bookings
+
+        </a>
+
+      }
+
+
+      <!-- ==================== PROFESSIONAL ==================== -->
+
+      @if (loggedIn && role === 'Professional') {
+
+        <a
+          routerLink="/professional-bookings"
+          routerLinkActive="active">
+
+          My Bookings
+
+        </a>
+
+      }
+
+
+      <!-- ==================== ADMIN ==================== -->
+
+      @if (loggedIn && role === 'Admin') {
+
+        <a
+          routerLink="/admin-bookings"
+          routerLinkActive="active">
+
+          Manage Bookings
+
+        </a>
+
+
+        <a
+          routerLink="/admin-professionals"
+          routerLinkActive="active">
+
+          Professionals
+
+        </a>
+
+      }
+
+
+      <!-- ==================== COMMON LINKS ==================== -->
+
+      <a
+        routerLink="/how-it-works"
+        routerLinkActive="active">
+
+        How it works
+
+      </a>
+
+
+      <a
+        routerLink="/about"
+        routerLinkActive="active">
+
+        About
+
+      </a>
+
+    </div>
+
+
+    <!-- ==================== RIGHT SIDE ==================== -->
+
+    <div class="nav-actions">
+
+      <!-- ==================== NOT LOGGED IN ==================== -->
+
+      @if (!loggedIn) {
+
+        <a
+          routerLink="/login"
+          class="login-link">
+
+          Log in
+
+        </a>
+
+
+        <a
+          routerLink="/register"
+          class="signup-btn">
+
+          Get Started
+
+          <i class="bi bi-arrow-up-right"></i>
+
+        </a>
+
+      }
+
+
+      <!-- ==================== LOGGED IN ==================== -->
+
+      @if (loggedIn) {
+
+  <button
+    type="button"
+    class="logout-btn"
+    (click)="logout()"
+    style="
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 22px;
+      background: #171717;
+      color: #ffffff;
+      border: 1px solid #171717;
+      border-radius: 7px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-sizing: border-box;
+    ">
+
+    Log out
+
+  </button>
+
+}
+
+    </div>
+
+  </div>
+
+</nav>

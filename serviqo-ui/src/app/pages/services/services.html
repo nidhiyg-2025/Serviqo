@@ -1,0 +1,180 @@
+<section class="services-page">
+
+  <div class="services-container">
+
+    <header class="services-header">
+
+      <div class="eyebrow">
+        <span></span>
+        SERVIQO SERVICES
+      </div>
+
+      <h1>
+        Professional help,
+        <br>
+        <em>right at home.</em>
+      </h1>
+
+      <p>
+        From quick repairs to complete home care,
+        book trusted professionals whenever you need them.
+      </p>
+
+    </header>
+
+
+    @if (loading) {
+      <p class="services-status">Loading services...</p>
+    }
+
+    @if (errorMessage) {
+      <div class="services-error">
+        <p>{{ errorMessage }}</p>
+        <button type="button" (click)="loadServices()">Try again</button>
+      </div>
+    }
+
+    @if (!loading && !errorMessage && services.length === 0) {
+      <p class="services-status">No services available right now.</p>
+    }
+
+    @if (!loading && !errorMessage) {
+    <div class="services-grid">
+
+      @for (service of services; track service.serviceId) {
+
+        <article class="service-card">
+
+          <div class="card-top">
+
+            <span class="service-number">
+              {{ $index + 1 }}
+            </span>
+
+            <div class="service-icon">
+
+              @switch (service.serviceName) {
+
+                @case ('Plumbing') {
+                  <span>⌁</span>
+                }
+
+                @case ('Electrical') {
+                  <span>ϟ</span>
+                }
+
+                @case ('Home Cleaning') {
+                  <span>✦</span>
+                }
+
+                @case ('AC Repair') {
+                  <span>❄</span>
+                }
+
+                @case ('Carpentry') {
+                  <span>⌂</span>
+                }
+
+                @case ('Appliance Repair') {
+                  <span>⚙</span>
+                }
+
+                @default {
+                  <span>+</span>
+                }
+
+              }
+
+            </div>
+
+          </div>
+
+
+          <div class="card-content">
+
+            <h2>
+              {{ service.serviceName }}
+            </h2>
+
+            <p>
+              {{ service.description }}
+            </p>
+
+          </div>
+
+
+          <div class="card-footer">
+
+            <div class="price">
+
+              <small>
+                STARTING FROM
+              </small>
+
+              <strong>
+                ₹{{ service.price }}
+              </strong>
+
+            </div>
+
+            <button
+              type="button"
+              class="book-button"
+              (click)="bookService(service)">
+
+              Book now
+              <span>↗</span>
+
+            </button>
+
+          </div>
+
+        </article>
+
+      }
+
+    </div>
+    }
+
+    <div class="trust-section">
+
+      <div class="trust-item">
+
+        <strong>01</strong>
+
+        <div>
+          <b>Verified professionals</b>
+          <span>Background-checked experts</span>
+        </div>
+
+      </div>
+
+
+      <div class="trust-item">
+
+        <strong>02</strong>
+
+        <div>
+          <b>Transparent pricing</b>
+          <span>No hidden surprises</span>
+        </div>
+
+      </div>
+
+
+      <div class="trust-item">
+
+        <strong>03</strong>
+
+        <div>
+          <b>Easy booking</b>
+          <span>Book in less than a minute</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>

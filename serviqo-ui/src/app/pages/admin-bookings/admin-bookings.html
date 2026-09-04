@@ -1,0 +1,417 @@
+<section class="admin-bookings-page">
+
+  <div class="admin-container">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+
+      <div>
+        <span class="eyebrow">SERVIQO ADMIN</span>
+
+        <h1>
+          Manage <span>bookings.</span>
+        </h1>
+
+        <p>
+          Review customer requests, manage booking status,
+          and assign professionals.
+        </p>
+      </div>
+
+      <div class="booking-count" *ngIf="!loading && !errorMessage">
+        <span>{{ bookings.length }}</span>
+        <small>Total bookings</small>
+      </div>
+
+    </div>
+
+
+    <!-- LOADING -->
+    @if (loading) {
+
+      <div class="state-card">
+
+        <div class="loader"></div>
+
+        <h2>Loading bookings</h2>
+
+        <p>
+          Please wait while we fetch the latest bookings.
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- ERROR -->
+    @if (!loading && errorMessage) {
+
+      <div class="state-card error-state">
+
+        <div class="state-icon">!</div>
+
+        <h2>
+          Unable to load bookings
+        </h2>
+
+        <p>
+          {{ errorMessage }}
+        </p>
+
+        <button
+          type="button"
+          (click)="loadBookings()">
+
+          Try again
+
+        </button>
+
+      </div>
+
+    }
+
+
+    <!-- NO BOOKINGS -->
+    @if (
+      !loading &&
+      !errorMessage &&
+      bookings.length === 0
+    ) {
+
+      <div class="state-card empty-state">
+
+        <div class="state-icon">+</div>
+
+        <h2>
+          No bookings yet
+        </h2>
+
+        <p>
+          Customer service requests will appear here.
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- BOOKINGS -->
+    @if (
+      !loading &&
+      !errorMessage &&
+      bookings.length > 0
+    ) {
+
+      <div class="booking-list">
+
+        @for (
+          booking of bookings;
+          track booking.bookingId
+        ) {
+
+          <article class="booking-card">
+
+
+            <!-- BOOKING HEADER -->
+            <div class="booking-top">
+
+              <div class="booking-heading">
+
+                <span class="booking-number">
+                  {{ booking.bookingNumber }}
+                </span>
+
+                <h2>
+                  {{ booking.service }}
+                </h2>
+
+              </div>
+
+
+              <span
+                class="status"
+                [ngClass]="getStatusClass(booking.status)">
+
+                <span class="status-dot"></span>
+
+                {{ booking.status }}
+
+              </span>
+
+            </div>
+
+
+            <!-- BOOKING DETAILS -->
+            <div class="booking-details">
+
+
+              <!-- CUSTOMER -->
+              <div class="detail-item">
+
+                <span class="detail-label">
+                  Customer
+                </span>
+
+                <strong>
+                  {{ booking.customer }}
+                </strong>
+
+              </div>
+
+
+              <!-- DATE -->
+              <div class="detail-item">
+
+                <span class="detail-label">
+                  Date
+                </span>
+
+                <strong>
+                  {{ formatDate(booking.bookingDate) }}
+                </strong>
+
+              </div>
+
+
+              <!-- TIME -->
+              <div class="detail-item">
+
+                <span class="detail-label">
+                  Time
+                </span>
+
+                <strong>
+                  {{ formatTime(booking.bookingDate) }}
+                </strong>
+
+              </div>
+
+
+              <!-- ADDRESS -->
+              <div class="detail-item address-item">
+
+                <span class="detail-label">
+                  Address
+                </span>
+
+                <strong>
+                  {{ booking.address }}
+                </strong>
+
+              </div>
+
+
+              <!-- PROFESSIONAL -->
+              <div class="detail-item">
+
+                <span class="detail-label">
+                  Professional
+                </span>
+
+                <strong
+                  [class.not-assigned]="!booking.professional">
+
+                  @if (booking.professional) {
+
+                    {{ booking.professional }}
+
+                  } @else {
+
+                    Not assigned
+
+                  }
+
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <!-- STATUS MANAGEMENT -->
+            <div class="status-management">
+
+              <div class="management-label">
+
+                <span class="control-icon">
+                  ↻
+                </span>
+
+                <div>
+                  <label>
+                    Booking status
+                  </label>
+
+                  <small>
+                    Update the current booking stage
+                  </small>
+                </div>
+
+              </div>
+
+
+              <select
+                class="status-select"
+                [value]="booking.status"
+                (change)="
+                  updateBookingStatus(
+                    booking,
+                    $any($event.target).value
+                  )
+                ">
+
+                <option value="Pending">
+                  Pending
+                </option>
+
+                <option value="Assigned">
+                  Assigned
+                </option>
+
+                <option value="InProgress">
+                  In Progress
+                </option>
+
+                <option value="Completed">
+                  Completed
+                </option>
+
+                <option value="Cancelled">
+                  Cancelled
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <!-- FOOTER -->
+            <div class="booking-footer">
+
+              <div class="created-info">
+
+                <span>
+                  Created
+                </span>
+
+                <strong>
+                  {{ formatDate(booking.createdAt) }}
+                </strong>
+
+              </div>
+
+
+              <div class="manage-section">
+
+                @if (!booking.professional) {
+
+                  <div class="professional-select-wrapper">
+
+                    <span class="select-label">
+                      Assign professional
+                    </span>
+
+                    <select
+                      [value]="
+                        selectedProfessional[
+                          booking.bookingId
+                        ] || ''
+                      "
+                      (change)="
+                        selectedProfessional[
+                          booking.bookingId
+                        ] =
+                        +$any($event.target).value
+                      ">
+
+                      <option value="">
+                        Select professional
+                      </option>
+
+
+                      @for (
+                        professional of professionals;
+                        track professional.professionalId
+                      ) {
+
+                        @if (professional.isAvailable) {
+
+                          <option
+                            [value]="
+                              professional.professionalId
+                            ">
+
+                            {{ professional.fullName }}
+                            —
+                            {{ professional.specialization }}
+
+                          </option>
+
+                        }
+
+                      }
+
+                    </select>
+
+                  </div>
+
+
+                  <button
+                    type="button"
+                    class="assign-button"
+                    (click)="assignProfessional(booking)"
+                    [disabled]="
+                      !selectedProfessional[
+                        booking.bookingId
+                      ] || assigning
+                    ">
+
+                    @if (assigning) {
+
+                      <span class="button-loader"></span>
+                      Assigning...
+
+                    } @else {
+
+                      Assign professional
+                      <span class="arrow">→</span>
+
+                    }
+
+                  </button>
+
+                } @else {
+
+                  <div class="assigned-professional">
+
+                    <span class="assigned-check">
+                      ✓
+                    </span>
+
+                    <div>
+                      <small>Assigned to</small>
+                      <strong>
+                        {{ booking.professional }}
+                      </strong>
+                    </div>
+
+                  </div>
+
+                }
+
+              </div>
+
+            </div>
+
+          </article>
+
+        }
+
+      </div>
+
+    }
+
+  </div>
+
+</section>

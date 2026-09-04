@@ -1,0 +1,659 @@
+<section class="professionals-page">
+
+  <div class="professionals-container">
+
+
+    <!-- ==========================================
+         HEADER
+    =========================================== -->
+
+    <div class="page-header">
+
+      <div>
+
+        <span class="eyebrow">
+          SERVIQO ADMIN
+        </span>
+
+        <h1>
+          Manage
+          <span>professionals.</span>
+        </h1>
+
+        <p>
+          Add and manage the professionals who provide
+          services to Serviqo customers.
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="add-button"
+        (click)="openForm()">
+
+        <i class="bi bi-plus-lg"></i>
+
+        Add Professional
+
+      </button>
+
+    </div>
+
+
+    <!-- ==========================================
+         SUCCESS MESSAGE
+    =========================================== -->
+
+    @if (successMessage) {
+
+      <div class="success-message">
+
+        <i class="bi bi-check-circle-fill"></i>
+
+        {{ successMessage }}
+
+      </div>
+
+    }
+
+
+    <!-- ==========================================
+         ERROR MESSAGE
+    =========================================== -->
+
+    @if (errorMessage) {
+
+      <div class="error-message">
+
+        <i class="bi bi-exclamation-circle-fill"></i>
+
+        {{ errorMessage }}
+
+      </div>
+
+    }
+
+
+    <!-- ==========================================
+         FORM
+    =========================================== -->
+
+    @if (showForm) {
+
+      <div class="form-card">
+
+        <div class="form-header">
+
+          <div>
+
+            <span class="eyebrow">
+
+              @if (editing) {
+                EDIT PROFESSIONAL
+              } @else {
+                NEW PROFESSIONAL
+              }
+
+            </span>
+
+
+            <h2>
+
+              @if (editing) {
+                Edit professional
+              } @else {
+                Add professional
+              }
+
+            </h2>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="close-button"
+            (click)="closeForm()">
+
+            <i class="bi bi-x-lg"></i>
+
+          </button>
+
+        </div>
+
+
+        <!-- ======================================
+             ADD PROFESSIONAL FORM
+        ======================================= -->
+
+        @if (!editing) {
+
+          <form
+            #professionalForm="ngForm"
+            (ngSubmit)="
+              createProfessional(professionalForm)
+            ">
+
+
+            <!-- FULL NAME -->
+
+            <div class="form-group">
+
+              <label>
+                Full Name
+              </label>
+
+              <input
+                type="text"
+                name="fullName"
+                [(ngModel)]="
+                  newProfessional.fullName
+                "
+                required
+                minlength="3"
+                placeholder="Enter full name">
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div class="form-group">
+
+              <label>
+                Email
+              </label>
+
+              <input
+                type="email"
+                name="email"
+                [(ngModel)]="
+                  newProfessional.email
+                "
+                required
+                email
+                placeholder="professional@example.com">
+
+            </div>
+
+
+            <!-- PHONE -->
+
+            <div class="form-group">
+
+              <label>
+                Phone
+              </label>
+
+              <input
+                type="tel"
+                name="phone"
+                [(ngModel)]="
+                  newProfessional.phone
+                "
+                required
+                pattern="[0-9]{10}"
+                maxlength="10"
+                placeholder="10 digit phone number">
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div class="form-group">
+
+              <label>
+                Password
+              </label>
+
+              <input
+                type="password"
+                name="password"
+                [(ngModel)]="
+                  newProfessional.password
+                "
+                required
+                minlength="6"
+                placeholder="Create login password">
+
+            </div>
+
+
+            <!-- SPECIALIZATION -->
+
+            <div class="form-group">
+
+              <label>
+                Specialization
+              </label>
+
+              <select
+                name="specialization"
+                [(ngModel)]="
+                  newProfessional.specialization
+                "
+                required>
+
+                <option value="Plumbing">
+                  Plumbing
+                </option>
+
+                <option value="Electrical">
+                  Electrical
+                </option>
+
+                <option value="AC Repair">
+                  AC Repair
+                </option>
+
+                <option value="Home Cleaning">
+                  Home Cleaning
+                </option>
+
+                <option value="Carpentry">
+                  Carpentry
+                </option>
+
+                <option value="Appliance Repair">
+                  Appliance Repair
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <!-- AVAILABILITY -->
+
+            <div class="availability-row">
+
+              <input
+                type="checkbox"
+                id="available"
+                name="isAvailable"
+                [(ngModel)]="
+                  newProfessional.isAvailable
+                ">
+
+              <label for="available">
+                Professional is available
+              </label>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="form-actions">
+
+              <button
+                type="button"
+                class="cancel-button"
+                (click)="closeForm()">
+
+                Cancel
+
+              </button>
+
+
+              <button
+                type="submit"
+                class="submit-button"
+                [disabled]="
+                  professionalForm.invalid ||
+                  submitting
+                ">
+
+                @if (submitting) {
+
+                  Creating...
+
+                } @else {
+
+                  Create Professional
+
+                }
+
+              </button>
+
+            </div>
+
+          </form>
+
+        }
+
+
+        <!-- ======================================
+             EDIT PROFESSIONAL FORM
+        ======================================= -->
+
+        @if (editing) {
+
+          <form
+            #editForm="ngForm"
+            (ngSubmit)="
+              updateProfessional(editForm)
+            ">
+
+
+            <!-- FULL NAME -->
+
+            <div class="form-group">
+
+              <label>
+                Full Name
+              </label>
+
+              <input
+                type="text"
+                name="editFullName"
+                [(ngModel)]="
+                  updateProfessionalData.fullName
+                "
+                required
+                minlength="3"
+                placeholder="Enter full name">
+
+            </div>
+
+
+            <!-- PHONE -->
+
+            <div class="form-group">
+
+              <label>
+                Phone
+              </label>
+
+              <input
+                type="tel"
+                name="editPhone"
+                [(ngModel)]="
+                  updateProfessionalData.phone
+                "
+                required
+                pattern="[0-9]{10}"
+                maxlength="10"
+                placeholder="10 digit phone number">
+
+            </div>
+
+
+            <!-- SPECIALIZATION -->
+
+            <div class="form-group">
+
+              <label>
+                Specialization
+              </label>
+
+              <select
+                name="editSpecialization"
+                [(ngModel)]="
+                  updateProfessionalData.specialization
+                "
+                required>
+
+                <option value="Plumbing">
+                  Plumbing
+                </option>
+
+                <option value="Electrical">
+                  Electrical
+                </option>
+
+                <option value="AC Repair">
+                  AC Repair
+                </option>
+
+                <option value="Home Cleaning">
+                  Home Cleaning
+                </option>
+
+                <option value="Carpentry">
+                  Carpentry
+                </option>
+
+                <option value="Appliance Repair">
+                  Appliance Repair
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <!-- AVAILABILITY -->
+
+            <div class="availability-row">
+
+              <input
+                type="checkbox"
+                id="editAvailable"
+                name="editIsAvailable"
+                [(ngModel)]="
+                  updateProfessionalData.isAvailable
+                ">
+
+              <label for="editAvailable">
+                Professional is available
+              </label>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="form-actions">
+
+              <button
+                type="button"
+                class="cancel-button"
+                (click)="closeForm()">
+
+                Cancel
+
+              </button>
+
+
+              <button
+                type="submit"
+                class="submit-button"
+                [disabled]="
+                  editForm.invalid ||
+                  submitting
+                ">
+
+                @if (submitting) {
+
+                  Updating...
+
+                } @else {
+
+                  Update Professional
+
+                }
+
+              </button>
+
+            </div>
+
+          </form>
+
+        }
+
+      </div>
+
+    }
+
+
+    <!-- ==========================================
+         LOADING
+    =========================================== -->
+
+    @if (loading) {
+
+      <div class="state-card">
+
+        <div class="loader"></div>
+
+        <p>
+          Loading professionals...
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- ==========================================
+         EMPTY
+    =========================================== -->
+
+    @if (
+      !loading &&
+      !errorMessage &&
+      professionals.length === 0
+    ) {
+
+      <div class="state-card">
+
+        <h2>
+          No professionals yet
+        </h2>
+
+        <p>
+          Add your first professional using
+          the button above.
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- ==========================================
+         PROFESSIONAL LIST
+    =========================================== -->
+
+    @if (
+      !loading &&
+      professionals.length > 0
+    ) {
+
+      <div class="professional-grid">
+
+        @for (
+          professional of professionals;
+          track professional.professionalId
+        ) {
+
+          <article class="professional-card">
+
+
+            <!-- CARD TOP -->
+
+            <div class="card-top">
+
+              <div class="avatar">
+
+                {{
+                  professional.fullName
+                    .charAt(0)
+                    .toUpperCase()
+                }}
+
+              </div>
+
+
+              <span
+                class="availability"
+                [class.available]="
+                  professional.isAvailable
+                "
+                [class.unavailable]="
+                  !professional.isAvailable
+                ">
+
+                @if (professional.isAvailable) {
+
+                  Available
+
+                } @else {
+
+                  Unavailable
+
+                }
+
+              </span>
+
+            </div>
+
+
+            <!-- NAME -->
+
+            <h2>
+              {{ professional.fullName }}
+            </h2>
+
+
+            <!-- SPECIALIZATION -->
+
+            <p class="specialization">
+
+              <i class="bi bi-tools"></i>
+
+              {{ professional.specialization }}
+
+            </p>
+
+
+            <!-- PHONE -->
+
+            <p class="phone">
+
+              <i class="bi bi-telephone"></i>
+
+              {{ professional.phone }}
+
+            </p>
+
+
+            <!-- ID -->
+
+            <div class="professional-id">
+
+              Professional ID:
+              #{{ professional.professionalId }}
+
+            </div>
+
+
+            <!-- EDIT BUTTON -->
+
+            <button
+              type="button"
+              class="edit-button"
+              (click)="editProfessional(professional)">
+
+              <i class="bi bi-pencil"></i>
+
+              Edit Professional
+
+            </button>
+
+
+          </article>
+
+        }
+
+      </div>
+
+    }
+
+  </div>
+
+</section>

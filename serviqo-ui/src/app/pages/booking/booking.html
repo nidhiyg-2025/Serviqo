@@ -1,0 +1,306 @@
+<section class="booking-page">
+
+  <div class="booking-container">
+
+    <!-- HEADER -->
+
+    <div class="booking-header">
+
+      <a
+        routerLink="/services"
+        class="back-link">
+
+        ← Back to services
+
+      </a>
+
+      <span class="eyebrow">
+        SERVIQO BOOKING
+      </span>
+
+      <h1>
+        Book your
+        <span>service.</span>
+      </h1>
+
+      <p>
+        Tell us what you need and choose a convenient
+        time for our professional to visit.
+      </p>
+
+    </div>
+
+
+    <!-- LOADING -->
+
+    @if (loadingService) {
+
+      <div class="loading">
+        Loading service details...
+      </div>
+
+    }
+
+
+    <!-- ERROR -->
+
+    @if (!loadingService && errorMessage && !serviceName) {
+
+      <div class="error-message">
+        {{ errorMessage }}
+      </div>
+
+    }
+
+
+    <!-- BOOKING -->
+
+    @if (!loadingService && serviceName) {
+
+      <div class="booking-layout">
+
+
+        <!-- SERVICE SUMMARY -->
+
+        <aside class="service-summary">
+
+          <span class="summary-label">
+            SELECTED SERVICE
+          </span>
+
+
+          <div class="service-icon">
+            ✦
+          </div>
+
+
+          <h2>
+            {{ serviceName }}
+          </h2>
+
+
+          <p>
+            Professional home service from
+            Serviqo's verified network.
+          </p>
+
+
+          <div class="price">
+
+            <small>
+              Starting from
+            </small>
+
+            <strong>
+              ₹{{ servicePrice }}
+            </strong>
+
+          </div>
+
+
+          <div class="trust">
+
+            <div>
+              <span>✓</span>
+              Verified professionals
+            </div>
+
+            <div>
+              <span>✓</span>
+              Transparent pricing
+            </div>
+
+            <div>
+              <span>✓</span>
+              Easy booking
+            </div>
+
+          </div>
+
+        </aside>
+
+
+        <!-- FORM -->
+
+        <div class="booking-card">
+
+
+          <div class="form-header">
+
+            <span>01</span>
+
+            <div>
+
+              <h2>
+                Booking details
+              </h2>
+
+              <p>
+                Please provide your visit details.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          @if (errorMessage) {
+
+            <div class="error-message">
+              {{ errorMessage }}
+            </div>
+
+          }
+
+
+          @if (successMessage) {
+
+            <div class="success-message">
+              {{ successMessage }}
+            </div>
+
+          }
+
+
+          <form
+            #bookingForm="ngForm"
+            (ngSubmit)="submitBooking()">
+
+
+            <!-- DATE -->
+
+            <div class="form-group">
+
+              <label>
+                Preferred date & time
+                <span>*</span>
+              </label>
+
+              <input
+                type="datetime-local"
+                name="bookingDate"
+                [(ngModel)]="bookingDate"
+                required>
+
+            </div>
+
+
+            <!-- ADDRESS -->
+
+            <div class="form-group">
+
+              <label>
+                Service address
+                <span>*</span>
+              </label>
+
+              <textarea
+                name="address"
+                [(ngModel)]="address"
+                rows="3"
+                placeholder="Enter the complete address where the service is required"
+                required>
+              </textarea>
+
+            </div>
+
+
+            <!-- PHONE -->
+
+            <div class="form-group">
+
+              <label>
+                Contact number
+                <span>*</span>
+              </label>
+
+              <input
+                type="tel"
+                name="phone"
+                [(ngModel)]="phone"
+                placeholder="Enter your 10-digit phone number"
+                maxlength="10"
+                inputmode="numeric"
+                required>
+
+            </div>
+
+
+            <!-- DESCRIPTION -->
+
+            <div class="form-group">
+
+              <label>
+                Tell us more
+                <small>(Optional)</small>
+              </label>
+
+              <textarea
+                name="description"
+                [(ngModel)]="description"
+                rows="4"
+                placeholder="Describe the issue or any specific requirements">
+              </textarea>
+
+            </div>
+
+
+            <!-- BUTTON -->
+
+            <button
+  type="submit"
+  class="confirm-btn"
+  [disabled]="
+    loading ||
+    paymentLoading ||
+    bookingForm.invalid ||
+    bookingSubmitted
+  ">
+
+  @if (loading) {
+
+    <span>
+      Creating booking...
+    </span>
+
+  }
+
+  @else if (paymentLoading) {
+
+    <span>
+      Processing payment...
+    </span>
+
+  }
+
+  @else {
+
+    <span>
+      Confirm & Pay ₹{{ servicePrice }}
+    </span>
+
+    <span class="arrow">
+      →
+    </span>
+
+  }
+
+</button>
+
+
+            <p class="secure-note">
+              Your information is securely handled by Serviqo.
+            </p>
+
+          </form>
+
+        </div>
+
+      </div>
+
+    }
+
+  </div>
+
+</section>
+

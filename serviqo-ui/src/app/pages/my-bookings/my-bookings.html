@@ -1,0 +1,239 @@
+<section class="bookings-page">
+
+  <div class="bookings-container">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+      <a
+        routerLink="/services"
+        class="back-link">
+
+        ← Browse services
+
+      </a>
+
+      <span class="eyebrow">
+        SERVIQO ACCOUNT
+      </span>
+
+      <h1>
+        Your
+        <span>bookings.</span>
+      </h1>
+
+      <p>
+        Track and manage all your home service requests
+        in one place.
+      </p>
+
+    </div>
+
+
+    <!-- LOADING -->
+
+    @if (loading) {
+
+      <div class="state-card">
+
+        <div class="loader"></div>
+
+        <p>
+          Loading your bookings...
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- ERROR -->
+
+    @if (!loading && errorMessage) {
+
+      <div class="state-card error-state">
+
+        <h2>
+          Something went wrong
+        </h2>
+
+        <p>
+          {{ errorMessage }}
+        </p>
+
+        <button
+          type="button"
+          (click)="loadBookings()">
+
+          Try again
+
+        </button>
+
+      </div>
+
+    }
+
+
+    <!-- EMPTY -->
+
+    @if (
+      !loading &&
+      !errorMessage &&
+      bookings.length === 0
+    ) {
+
+      <div class="state-card empty-state">
+
+        <div class="empty-icon">
+          ✦
+        </div>
+
+        <h2>
+          No bookings yet
+        </h2>
+
+        <p>
+          Your service bookings will appear here
+          once you book a service.
+        </p>
+
+        <a
+          routerLink="/services"
+          class="primary-btn">
+
+          Explore services →
+
+        </a>
+
+      </div>
+
+    }
+
+
+    <!-- BOOKINGS -->
+
+    @if (
+      !loading &&
+      !errorMessage &&
+      bookings.length > 0
+    ) {
+
+      <div class="booking-list">
+
+        @for (
+          booking of bookings;
+          track booking.bookingId
+        ) {
+
+          <article class="booking-card">
+
+            <div class="card-top">
+
+              <div>
+
+                <span class="booking-number">
+                  {{ booking.bookingNumber }}
+                </span>
+
+                <h2>
+                  {{ booking.service }}
+                </h2>
+
+              </div>
+
+
+              <span
+                class="status"
+                [ngClass]="
+                  getStatusClass(booking.status)
+                ">
+
+                {{ booking.status }}
+
+              </span>
+
+            </div>
+
+
+            <div class="booking-info">
+
+              <div class="info-item">
+
+                <span class="label">
+                  DATE & TIME
+                </span>
+
+                <strong>
+                  {{ formatDate(booking.bookingDate) }}
+                </strong>
+
+                <small>
+                  {{ formatTime(booking.bookingDate) }}
+                </small>
+
+              </div>
+
+
+              <div class="info-item">
+
+                <span class="label">
+                  ADDRESS
+                </span>
+
+                <strong>
+                  {{ booking.address }}
+                </strong>
+
+              </div>
+
+
+              <div class="info-item">
+
+                <span class="label">
+                  PROFESSIONAL
+                </span>
+
+                <strong>
+
+                  @if (booking.professional) {
+
+                    {{ booking.professional }}
+
+                  } @else {
+
+                    Awaiting assignment
+
+                  }
+
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <div class="card-bottom">
+
+              <span>
+                Booking requested
+              </span>
+
+              <span>
+                {{ formatDate(booking.createdAt) }}
+              </span>
+
+            </div>
+
+          </article>
+
+        }
+
+      </div>
+
+    }
+
+
+  </div>
+
+</section>

@@ -1,0 +1,310 @@
+.services-page {
+  min-height: 100vh;
+  background: #f4f3ef;
+  color: #171717;
+  padding: 80px 24px;
+}
+
+.services-container {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+
+.services-status,
+.services-error {
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  font-size: 15px;
+}
+
+.services-status {
+  background: #fff;
+  color: #666;
+}
+
+.services-error {
+  background: #fff1f0;
+  color: #b42318;
+  border: 1px solid #fecdca;
+}
+
+.services-error button {
+  margin-top: 12px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #e36b32;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+
+/* HEADER */
+
+.services-header {
+  max-width: 720px;
+  margin-bottom: 60px;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: #e36b32;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.eyebrow span {
+  width: 25px;
+  height: 2px;
+  background: #e36b32;
+}
+
+.services-header h1 {
+  margin: 20px 0;
+  font-size: clamp(45px, 6vw, 78px);
+  line-height: .95;
+  letter-spacing: -4px;
+  font-weight: 800;
+}
+
+.services-header h1 em {
+  color: #e36b32;
+  font-style: normal;
+}
+
+.services-header p {
+  max-width: 580px;
+  color: #777;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+
+/* SERVICES GRID */
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+
+/* CARD */
+
+.service-card {
+  min-height: 350px;
+  padding: 28px;
+
+  background: #ffffff;
+  border: 1px solid #e2e0db;
+
+  display: flex;
+  flex-direction: column;
+
+  box-sizing: border-box;
+
+  transition:
+    transform .25s ease,
+    box-shadow .25s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-6px);
+
+  box-shadow:
+    0 20px 45px rgba(0, 0, 0, .08);
+}
+
+
+/* TOP */
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.service-number {
+  color: #aaa;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.service-icon {
+  width: 52px;
+  height: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #f2eee8;
+  color: #e36b32;
+
+  font-size: 23px;
+}
+
+
+/* CONTENT */
+
+.card-content {
+  margin-top: 50px;
+}
+
+.card-content h2 {
+  margin: 0 0 12px;
+
+  font-size: 25px;
+  letter-spacing: -1px;
+}
+
+.card-content p {
+  margin: 0;
+
+  color: #818181;
+
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+
+/* FOOTER */
+
+.card-footer {
+  margin-top: auto;
+  padding-top: 25px;
+
+  border-top: 1px solid #eeeeee;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 15px;
+}
+
+.price small {
+  display: block;
+
+  color: #999;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 1px;
+
+  margin-bottom: 5px;
+}
+
+.price strong {
+  font-size: 23px;
+}
+
+
+/* BUTTON */
+
+.book-button {
+  border: none;
+
+  background: #171717;
+  color: white;
+
+  padding: 11px 15px;
+
+  border-radius: 4px;
+
+  cursor: pointer;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  transition: background .2s ease;
+}
+
+.book-button:hover {
+  background: #e36b32;
+}
+
+.book-button span {
+  font-size: 16px;
+}
+
+
+/* TRUST */
+
+.trust-section {
+  margin-top: 65px;
+  padding-top: 30px;
+
+  border-top: 1px solid #d9d7d1;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.trust-item {
+  display: flex;
+  gap: 15px;
+}
+
+.trust-item strong {
+  color: #e36b32;
+  font-size: 11px;
+}
+
+.trust-item b {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.trust-item span {
+  display: block;
+  color: #999;
+  font-size: 11px;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+
+  .services-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+@media (max-width: 600px) {
+
+  .services-page {
+    padding: 55px 15px;
+  }
+
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .services-header h1 {
+    letter-spacing: -3px;
+  }
+
+  .trust-section {
+    grid-template-columns: 1fr;
+  }
+
+}

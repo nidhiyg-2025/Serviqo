@@ -1,0 +1,287 @@
+
+<section class="professional-page">
+
+  <div class="professional-container">
+
+    <div class="page-header">
+
+      <span class="eyebrow">
+        SERVIQO PROFESSIONAL
+      </span>
+
+      <h1>
+        My
+        <span>bookings.</span>
+      </h1>
+
+      <p>
+        View your assigned service requests and
+        manage your work.
+      </p>
+
+    </div>
+
+
+    @if (loading) {
+
+      <div class="state-card">
+
+        <div class="loader"></div>
+
+        <p>
+          Loading your bookings...
+        </p>
+
+      </div>
+
+    }
+
+
+    @if (!loading && errorMessage) {
+
+      <div class="state-card">
+
+        <h2>
+          Unable to load bookings
+        </h2>
+
+        <p>
+          {{ errorMessage }}
+        </p>
+
+        <button
+          type="button"
+          (click)="loadBookings()">
+
+          Try again
+
+        </button>
+
+      </div>
+
+    }
+
+
+    @if (
+      !loading &&
+      !errorMessage &&
+      bookings.length === 0
+    ) {
+
+      <div class="state-card">
+
+        <h2>
+          No bookings assigned
+        </h2>
+
+        <p>
+          You don't have any assigned service requests yet.
+        </p>
+
+      </div>
+
+    }
+
+
+    @if (
+      !loading &&
+      !errorMessage &&
+      bookings.length > 0
+    ) {
+
+      <div class="booking-list">
+
+        @for (
+          booking of bookings;
+          track booking.bookingId
+        ) {
+
+          <article class="booking-card">
+
+            <div class="booking-top">
+
+              <div>
+
+                <span class="booking-number">
+                  {{ booking.bookingNumber }}
+                </span>
+
+                <h2>
+                  {{ booking.service }}
+                </h2>
+
+              </div>
+
+              <span
+                class="status"
+                [ngClass]="
+                  getStatusClass(booking.status)
+                ">
+
+                {{ booking.status }}
+
+              </span>
+
+            </div>
+
+
+            <div class="booking-details">
+
+              <div>
+                <span>Customer</span>
+                <strong>
+                  {{ booking.customer }}
+                </strong>
+              </div>
+
+
+              <div>
+                <span>Date</span>
+                <strong>
+                  {{ formatDate(booking.bookingDate) }}
+                </strong>
+              </div>
+
+
+              <div>
+                <span>Time</span>
+                <strong>
+                  {{ formatTime(booking.bookingDate) }}
+                </strong>
+              </div>
+
+
+              <div>
+                <span>Phone</span>
+                <strong>
+                  {{ booking.phone }}
+                </strong>
+              </div>
+
+
+              <div class="address">
+
+                <span>Address</span>
+
+                <strong>
+                  {{ booking.address }}
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            @if (booking.description) {
+
+              <div class="description">
+
+                <span>Customer request</span>
+
+                <p>
+                  {{ booking.description }}
+                </p>
+
+              </div>
+
+            }
+
+
+            <div class="booking-footer">
+
+              <span>
+                Created
+                {{ formatDate(booking.createdAt) }}
+              </span>
+
+
+              <div class="actions">
+
+                @if (booking.status === 'Assigned') {
+
+                  <button
+                    type="button"
+                    class="start-btn"
+                    [disabled]="
+                      updatingBookingId === booking.bookingId
+                    "
+                    (click)="
+                      updateStatus(
+                        booking,
+                        'InProgress'
+                      )
+                    ">
+
+                    @if (
+                      updatingBookingId === booking.bookingId
+                    ) {
+
+                      Updating...
+
+                    } @else {
+
+                      Start Work
+
+                    }
+
+                  </button>
+
+                }
+
+
+                @if (booking.status === 'InProgress') {
+
+                  <button
+                    type="button"
+                    class="complete-btn"
+                    [disabled]="
+                      updatingBookingId === booking.bookingId
+                    "
+                    (click)="
+                      updateStatus(
+                        booking,
+                        'Completed'
+                      )
+                    ">
+
+                    @if (
+                      updatingBookingId === booking.bookingId
+                    ) {
+
+                      Updating...
+
+                    } @else {
+
+                      Mark Completed
+
+                    }
+
+                  </button>
+
+                }
+
+
+                @if (booking.status === 'Completed') {
+
+                  <span class="completed-text">
+                    ✓ Work completed
+                  </span>
+
+                }
+
+              </div>
+
+            </div>
+
+          </article>
+
+        }
+
+      </div>
+
+    }
+
+  </div>
+
+</section>
+
