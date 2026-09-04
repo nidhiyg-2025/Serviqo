@@ -22,40 +22,91 @@ public class ApplicationDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        // ==========================================
+        // USER
+        // ==========================================
+
         modelBuilder.Entity<User>()
             .HasIndex(u => u.Email)
             .IsUnique();
+
+
+        // ==========================================
+        // BOOKING NUMBER
+        // ==========================================
 
         modelBuilder.Entity<Booking>()
             .HasIndex(b => b.BookingNumber)
             .IsUnique();
 
-        // User → Customer bookings
+
+        // ==========================================
+        // BOOKING DATE
+        // ==========================================
+        //
+        // BookingDate represents the customer's
+        // selected local appointment date and time.
+        //
+        // Example:
+        // 2026-09-05 15:00
+        //
+        // We do NOT want PostgreSQL to automatically
+        // convert this value to UTC.
+        //
+
+        modelBuilder.Entity<Booking>()
+            .Property(b => b.BookingDate)
+            .HasColumnType("timestamp without time zone");
+
+
+        // ==========================================
+        // USER → CUSTOMER BOOKINGS
+        // ==========================================
+
         modelBuilder.Entity<Booking>()
             .HasOne(b => b.Customer)
             .WithMany(u => u.Bookings)
             .HasForeignKey(b => b.CustomerId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // User → Professional
+
+        // ==========================================
+        // USER → PROFESSIONAL
+        // ==========================================
+
         modelBuilder.Entity<Professional>()
             .HasOne(p => p.User)
             .WithOne(u => u.Professional)
             .HasForeignKey<Professional>(p => p.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // Professional → Bookings
+
+        // ==========================================
+        // PROFESSIONAL → BOOKINGS
+        // ==========================================
+
         modelBuilder.Entity<Booking>()
             .HasOne(b => b.Professional)
             .WithMany(p => p.Bookings)
             .HasForeignKey(b => b.ProfessionalId)
             .OnDelete(DeleteBehavior.SetNull);
 
+
+        // ==========================================
+        // SERVICE PRICE
+        // ==========================================
+
         modelBuilder.Entity<Service>()
             .Property(s => s.Price)
             .HasPrecision(10, 2);
 
+
+        // ==========================================
+        // SEED SERVICES
+        // ==========================================
+
         modelBuilder.Entity<Service>().HasData(
+
             new Service
             {
                 ServiceId = 1,
@@ -64,6 +115,7 @@ public class ApplicationDbContext : DbContext
                 Price = 499,
                 IsActive = true
             },
+
             new Service
             {
                 ServiceId = 2,
@@ -72,6 +124,7 @@ public class ApplicationDbContext : DbContext
                 Price = 399,
                 IsActive = true
             },
+
             new Service
             {
                 ServiceId = 3,
@@ -80,6 +133,7 @@ public class ApplicationDbContext : DbContext
                 Price = 599,
                 IsActive = true
             },
+
             new Service
             {
                 ServiceId = 4,
@@ -88,6 +142,7 @@ public class ApplicationDbContext : DbContext
                 Price = 799,
                 IsActive = true
             },
+
             new Service
             {
                 ServiceId = 5,
@@ -96,6 +151,7 @@ public class ApplicationDbContext : DbContext
                 Price = 499,
                 IsActive = true
             },
+
             new Service
             {
                 ServiceId = 6,
